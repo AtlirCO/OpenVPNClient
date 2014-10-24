@@ -7,6 +7,8 @@
 *.sln.docstates
 
 # Build results
+[Pp]ublish/
+[Cc]lickonce/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -194,7 +196,8 @@ FakesAssemblies/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
