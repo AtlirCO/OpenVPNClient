@@ -1,0 +1,23 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AtlirVPNConnect.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Config" Type="System.String" Scope="User">
+      <Value Profile="(Default)">client
+dev tun
+proto udp
+remote $ip
+nobind
+ping 10
+ping-exit 60
+auth-user-pass
+auth-nocache
+explicit-exit-notify 3
+persist-key
+persist-tun
+comp-lzo
+remote-cert-tls server
+ns-cert-type server</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
