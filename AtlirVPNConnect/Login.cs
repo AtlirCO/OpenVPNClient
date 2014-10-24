@@ -63,7 +63,7 @@ namespace AtlirVPNConnect
             {
                 username.Text = InternalData.SettingsGrid.Username;
                 password.Text = InternalData.SettingsGrid.Password;
-                DoLogin();
+                //DoLogin();
             }
             else
             {
