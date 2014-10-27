@@ -1,4 +1,4 @@
 OpenVPNClient
 =============
 
-VPN Client for AtlirVPN.org 
+VPN Client for Atlir.org 
