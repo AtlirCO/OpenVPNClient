@@ -65,6 +65,12 @@ namespace AtlirVPNConnect.Util
             public string Name { get; set; }
 
             [Category("Network Info")]
+            [DisplayName("IP")]
+            [Description("Internal IP address")]
+            [ReadOnly(true)]
+            public string ipAddress { get; set; }
+
+            [Category("Network Info")]
             [DisplayName("GUID")]
             [Description("Interface GUID.")]
             [ReadOnly(true)]
