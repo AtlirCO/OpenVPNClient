@@ -45,6 +45,8 @@
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.portViewMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusBar = new StatusBar();
             this.header1 = new Header();
             this.tabs1 = new Tabs();
@@ -63,13 +65,26 @@
             this.consoleOutput = new TextArea();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.settingsGrid = new System.Windows.Forms.PropertyGrid();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.textArea1 = new TextArea();
+            this.button1 = new Button();
+            this.updateIPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serverViewMenu.SuspendLayout();
             this.trayMenu.SuspendLayout();
+            this.portViewMenu.SuspendLayout();
             this.tabs1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // serverViewMenu
@@ -187,11 +202,26 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // portViewMenu
+            // 
+            this.portViewMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeToolStripMenuItem,
+            this.updateIPToolStripMenuItem});
+            this.portViewMenu.Name = "portViewMenu";
+            this.portViewMenu.Size = new System.Drawing.Size(153, 70);
+            // 
+            // removeToolStripMenuItem
+            // 
+            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.removeToolStripMenuItem.Text = "Remove";
+            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+            // 
             // statusBar
             // 
             this.statusBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusBar.Font = new System.Drawing.Font("Source Sans Pro", 9F);
-            this.statusBar.Location = new System.Drawing.Point(0, 277);
+            this.statusBar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.statusBar.Location = new System.Drawing.Point(0, 278);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(603, 24);
             this.statusBar.TabIndex = 8;
@@ -202,7 +232,7 @@
             // 
             this.header1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
             this.header1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.header1.Font = new System.Drawing.Font("Source Sans Pro", 12F);
+            this.header1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.header1.Location = new System.Drawing.Point(0, 0);
             this.header1.Name = "header1";
             this.header1.Size = new System.Drawing.Size(603, 40);
@@ -218,6 +248,7 @@
             this.tabs1.Controls.Add(this.tabPage2);
             this.tabs1.Controls.Add(this.tabPage3);
             this.tabs1.Controls.Add(this.tabPage4);
+            this.tabs1.Controls.Add(this.tabPage5);
             this.tabs1.Location = new System.Drawing.Point(12, 46);
             this.tabs1.Name = "tabs1";
             this.tabs1.SelectedIndex = 0;
@@ -375,12 +406,108 @@
             this.settingsGrid.ToolbarVisible = false;
             this.settingsGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.settingsGrid_PropertyValueChanged);
             // 
+            // tabPage5
+            // 
+            this.tabPage5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.tabPage5.Controls.Add(this.comboBox1);
+            this.tabPage5.Controls.Add(this.listView1);
+            this.tabPage5.Controls.Add(this.textArea1);
+            this.tabPage5.Controls.Add(this.button1);
+            this.tabPage5.Location = new System.Drawing.Point(4, 25);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(571, 196);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Portforward";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(124, 7);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(358, 21);
+            this.comboBox1.TabIndex = 6;
+            // 
+            // listView1
+            // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6,
+            this.columnHeader8,
+            this.columnHeader11,
+            this.columnHeader9,
+            this.columnHeader10});
+            this.listView1.ContextMenuStrip = this.portViewMenu;
+            this.listView1.FullRowSelect = true;
+            this.listView1.Location = new System.Drawing.Point(3, 33);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(565, 163);
+            this.listView1.TabIndex = 5;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Server IP";
+            this.columnHeader6.Width = 121;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Port";
+            // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "Internal IP";
+            this.columnHeader11.Width = 81;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Created";
+            this.columnHeader9.Width = 145;
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "Updated";
+            this.columnHeader10.Width = 153;
+            // 
+            // textArea1
+            // 
+            this.textArea1.Location = new System.Drawing.Point(3, 6);
+            this.textArea1.Multiline = false;
+            this.textArea1.Name = "textArea1";
+            this.textArea1.Password = false;
+            this.textArea1.ReadOnly = false;
+            this.textArea1.Size = new System.Drawing.Size(115, 23);
+            this.textArea1.TabIndex = 4;
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(488, 5);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(80, 25);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Add Port";
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // updateIPToolStripMenuItem
+            // 
+            this.updateIPToolStripMenuItem.Name = "updateIPToolStripMenuItem";
+            this.updateIPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.updateIPToolStripMenuItem.Text = "Update IP";
+            this.updateIPToolStripMenuItem.Click += new System.EventHandler(this.updateIPToolStripMenuItem_Click);
+            // 
             // Controller
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(603, 301);
+            this.ClientSize = new System.Drawing.Size(603, 302);
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.header1);
             this.Controls.Add(this.tabs1);
@@ -395,11 +522,13 @@
             this.ResizeEnd += new System.EventHandler(this.Controller_ResizeEnd);
             this.serverViewMenu.ResumeLayout(false);
             this.trayMenu.ResumeLayout(false);
+            this.portViewMenu.ResumeLayout(false);
             this.tabs1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
+            this.tabPage5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -439,6 +568,19 @@
         private System.Windows.Forms.ToolStripMenuItem locationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pingToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem1;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private Button button1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private TextArea textArea1;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ContextMenuStrip portViewMenu;
+        private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ToolStripMenuItem updateIPToolStripMenuItem;
 
     }
 }
