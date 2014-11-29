@@ -11,6 +11,7 @@ namespace AtlirVPNConnect.OpenVPN
     {
         private static Thread MonThread;
         private static NetworkInterface ActiveInterface;
+
         public static NetworkInterface InterfaceAvaliable()
         {
             if (string.IsNullOrEmpty(ActiveController.InterfaceGuid)) return null;
@@ -34,6 +35,7 @@ namespace AtlirVPNConnect.OpenVPN
                     InternalData.InformationGrid.Name = ActiveInterface.Name;
                     InternalData.InformationGrid.Guid = ActiveInterface.Id;
                     InternalData.InformationGrid.DNS = String.Join(", ", ActiveInterface.GetIPProperties().DnsAddresses);
+                    InternalData.InformationGrid.ipAddress = getIP();
                     EventRegistrar.Interface.OnUpdateInterfaceStats();
                     Thread.Sleep(10000);
                 }
@@ -42,6 +44,19 @@ namespace AtlirVPNConnect.OpenVPN
                 IsBackground = true
             };
             MonThread.Start();
+        }
+
+        public static String getIP()
+        {
+            var ipAddress = "";
+            foreach (UnicastIPAddressInformation ip in ActiveInterface.GetIPProperties().UnicastAddresses)
+            {
+                if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    ipAddress = (ip.Address.ToString());
+                }
+            }
+            return ipAddress;
         }
     }
 }
