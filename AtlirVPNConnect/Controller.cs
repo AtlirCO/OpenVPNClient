@@ -84,6 +84,22 @@ namespace AtlirVPNConnect
 
         #region Functions
 
+
+        private void LoadPortList(Api.Next done = null)
+        {
+            listView1.Items.Clear();
+            ListStorage.Clear();
+
+            Api.Sorted.ServerList.loadPorts(
+                (success, value) => Invoke((MethodInvoker) (() =>
+                {
+                    var item = (ListViewItem)(value);
+                    listView1.Items.Add(item);
+                    ListStorage.Add(item);
+                })), done);
+        }
+
+
         private void UpdateServerList(Api.Next done = null)
         {
             serverView.Items.Clear();
@@ -101,6 +117,9 @@ namespace AtlirVPNConnect
                         item.Group = serverView.Groups[item.SubItems[1].Text];
                     serverView.Items.Add(item);
                     ListStorage.Add(item);
+
+                    //Add server to portforward page
+                    comboBox1.Items.Add(item.Text + " - " + item.SubItems[3].Text);
                 })), done);
         }
 
@@ -219,6 +238,9 @@ namespace AtlirVPNConnect
             if (InternalData.SettingsGrid.AutoConnect)
                 done = (success, value) => AutoConnect();
             UpdateServerList(done);
+            LoadPortList(done);
+
+           //Api.Sorted.ServerList.ServersToDropDown(done);
             if (Program.Arguments.Contains("-silent"))
             {
                 Visible = false;
@@ -327,5 +349,101 @@ namespace AtlirVPNConnect
         }
 
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int port;
+            string serverName = comboBox1.Text.Substring(0, comboBox1.Text.LastIndexOf(" ")-1);
+            string serverIP = comboBox1.Text.Substring(comboBox1.Text.LastIndexOf(" ")+1);           
+
+            if (comboBox1.Text == null || !int.TryParse(textArea1.Text, out port))
+            {
+                MessageBox.Show("Error: Port must be a number, and you must select a server");
+                return;
+            }
+
+                //Make call to API to add port
+            switch (port)
+            {
+                case 80:
+                case 443:
+                case 22:
+                case 3389:
+                case 25565:
+                case 21:
+                    MessageBox.Show("Error: This port is blocked from being forwarded");
+                    return;
+                default:
+                    break;
+            }
+
+            if (listView1.Items.Count >= 5)
+            {
+                MessageBox.Show("Error: You are only allowed 5 Open port");
+                return;
+            }
+
+            if (!ActiveController.IsRunning)
+            {
+                MessageBox.Show("Error: Please connect to a server before forwarding a port");
+                return;
+            }
+
+            AddPort(port, serverIP, InternalData.InformationGrid.ipAddress);
+        }
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeletePort();
+        }
+
+        private void DeletePort()
+        {
+            int port;
+            int.TryParse(listView1.SelectedItems[0].SubItems[1].Text, out port);
+            string server = listView1.SelectedItems[0].Text;
+            string internalip = listView1.SelectedItems[0].SubItems[2].Text;
+
+            Api.delPort(port, server, internalip, (success, value) =>
+            {
+                statusBar.Text = (string)value;
+                if (!success) return;
+            });
+            LoadPortList();
+        }
+
+        private void AddPort(int port, string server, string internalip)
+        {
+            Api.addPort(port, server, internalip, (success, value) =>
+            {
+                statusBar.Text = (string)value;
+                if (!success) return;
+            });
+            LoadPortList();
+        }
+
+        private void updateIPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int port;
+            int.TryParse(listView1.SelectedItems[0].SubItems[1].Text, out port);
+            string serverIP = listView1.SelectedItems[0].Text;
+
+            if (!ActiveController.IsRunning)
+            {
+                MessageBox.Show("Error: Please connect to a server before updating a port");
+                return;
+            }
+            UpdatePort(port, serverIP, InternalData.InformationGrid.ipAddress);
+        }
+
+        private void UpdatePort(int port, string server, string internalip)
+        {
+            Api.updatePort(port, server, internalip, (success, value) =>
+            {
+                statusBar.Text = (string)value;
+                if (!success) return;
+            });
+            LoadPortList();
+        }
     }
 }

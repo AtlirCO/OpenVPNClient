@@ -42,9 +42,13 @@ namespace AtlirVPNConnect.Atlir
                     sender["password"] = password;
                     var jO = JObject.Parse(Session.Post("login", sender.ToString()));
                     if (jO["msg"] != null)
+                    {
                         next(true, jO["msg"].ToString());
+                    }
                     else
+                    {
                         next(false, jO["emsg"].ToString());
+                    }
                 }
                 catch (Exception)
                 {
@@ -64,6 +68,90 @@ namespace AtlirVPNConnect.Atlir
                 var eval = Session.Get("servers");
                 if (eval == null) return;
                 var jO = JArray.Parse(Session.Get("servers"));
+                next(jO != null, jO);
+            });
+        }
+
+        /// <summary>delPort
+        /// Remove Ports using the push api
+        /// </summary>
+        /// <param name="next">Callback for the async handler</param>
+        public static void delPort(int port, string serverIP, string InterIPAddress, Next next)
+        {
+            Async(() =>
+            {
+                //var eval = Session.Get("ports/del/" + InternalData.SettingsGrid.Username + "/" + InternalData.InformationGrid.ipAddress + "/" + port + "/" + serverIP);
+                var eval = Session.Get("ports/del/" + InternalData.SettingsGrid.Username + "/" + InterIPAddress + "/" + port + "/" + serverIP);
+                if (eval == null) return;
+                var jO = JObject.Parse(eval); 
+                if (jO["msg"] != null)
+                {
+                    next(true, jO["msg"].ToString());
+                }
+                else
+                {
+                    next(false, jO["emsg"].ToString());
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds Ports using the push api
+        /// </summary>
+        /// <param name="next">Callback for the async handler</param>
+        public static void addPort(int port, string serverIP, string InterIPAddress, Next next)
+        {
+            Async(() =>
+            {
+                //var eval = Session.Get("ports/add/" + InternalData.SettingsGrid.Username + "/" + InternalData.InformationGrid.ipAddress + "/" + port + "/" + serverIP);
+                var eval = Session.Get("ports/add/" + InternalData.SettingsGrid.Username + "/" + InterIPAddress + "/" + port + "/" + serverIP);
+                if (eval == null) return;
+                var jO = JObject.Parse(eval);
+                if (jO["msg"] != null)
+                {
+                    next(true, jO["msg"].ToString());
+                }
+                else
+                {
+                    next(false, jO["emsg"].ToString());
+                }
+            });
+        }
+
+        /// <summary>
+        /// Updates Internal IP for portforwarding using the push api
+        /// </summary>
+        /// <param name="next">Callback for the async handler</param>
+        public static void updatePort(int port, string serverIP, string InterIPAddress, Next next)
+        {
+            Async(() =>
+            {
+                //var eval = Session.Get("ports/add/" + InternalData.SettingsGrid.Username + "/" + InternalData.InformationGrid.ipAddress + "/" + port + "/" + serverIP);
+                var eval = Session.Get("ports/update/" + InternalData.SettingsGrid.Username + "/" + InterIPAddress + "/" + port + "/" + serverIP);
+                if (eval == null) return;
+                var jO = JObject.Parse(eval);
+                if (jO["msg"] != null)
+                {
+                    next(true, jO["msg"].ToString());
+                }
+                else
+                {
+                    next(false, jO["emsg"].ToString());
+                }
+            });
+        }
+
+        /// <summary>
+        /// Get the ports open for the user
+        /// </summary>
+        /// <param name="next">Callback for the async handler</param>
+        public static void getPorts(Next next)
+        {
+            Async(() =>
+            {
+                var eval = Session.Get("ports/get/" + InternalData.SettingsGrid.Username);
+                if (eval == null) return;
+                var jO = JArray.Parse(Session.Get("ports/get/" + InternalData.SettingsGrid.Username)); 
                 next(jO != null, jO);
             });
         }
@@ -166,7 +254,7 @@ namespace AtlirVPNConnect.Atlir
                     Servers((success, value) =>
                     {
                         var s = EventRegistrar.Status.AddTask("Fetching servers, and ping tests");
-                        var items = ((JArray) value).Select(jO =>
+                        var items = ((JArray)value).Select(jO =>
                         {
                             var name = new[]
                             {
@@ -182,7 +270,7 @@ namespace AtlirVPNConnect.Atlir
                             };
                         })
                             .ToList();
-                        Parallel.ForEach(items, new ParallelOptions {MaxDegreeOfParallelism = 10},
+                        Parallel.ForEach(items, new ParallelOptions { MaxDegreeOfParallelism = 10 },
                             item =>
                             {
                                 var pingSender = new Ping();
@@ -191,6 +279,64 @@ namespace AtlirVPNConnect.Atlir
                                 item.SubItems.Add(reply.RoundtripTime + "");
                                 next(true, item);
                             });
+                        s.Lock();
+                        if (done != null)
+                            done(true, null);
+                    });
+                }
+
+                public static void loadPorts(Next next, Next done = null)
+                {
+                    getPorts((success, value) =>
+                    {
+                        var s = EventRegistrar.Status.AddTask("Fetching ports");
+                        var items = ((JArray)value).Select(jO =>
+                        {
+                            var name = new[]
+                            {
+                                jO["serverip"].ToString(),
+                                jO["port"].ToString(),
+                                jO["internalip"].ToString(),
+                                jO["createdAt"].ToString(),
+                                jO["updatedAt"].ToString()
+                            };
+                            return new ListViewItem(name)
+                            {
+                                Name = jO["id"].ToString(),
+                                Tag = string.Join(" ", name).ToLower()
+                            };
+                        })
+                            .ToList(); 
+                        Parallel.ForEach(items, new ParallelOptions { MaxDegreeOfParallelism = 10 },
+                            item =>
+                            {
+                                next(true, item);
+                            });
+                        s.Lock();
+                        if (done != null)
+                            done(true, null);
+                    });
+                }
+
+                public static void ServersToDropDown(Next next, Next done = null)
+                {
+                    Servers((success, value) =>
+                    {
+                        var s = EventRegistrar.Status.AddTask("Fetching Servers for Portforwarding");
+                        var items = ((JArray)value).Select(jO =>
+                        {
+                            var name = new[]
+                            {
+                                jO["name"].ToString(),
+                                jO["ip"].ToString()
+                            };
+                            return new ListViewItem(name)
+                            {
+                                Name = jO["ip"].ToString(),
+                                Tag = string.Join(" ", name).ToLower()
+                            };
+                        })
+                            .ToList();
                         s.Lock();
                         if (done != null)
                             done(true, null);
