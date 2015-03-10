@@ -231,7 +231,7 @@ namespace AtlirVPNConnect.Atlir
                         var blockedSites = "";
                         if (!string.IsNullOrEmpty(InternalData.SettingsGrid.Ignore))
                         {
-                            blockedSites = InternalData.SettingsGrid.Ignore.Split(',')
+                            blockedSites = InternalData.SettingsGrid.Ignore.Trim().Replace("\r\n", ",").Split(',')
                                 .Aggregate("",
                                     (current, site) =>
                                         current +

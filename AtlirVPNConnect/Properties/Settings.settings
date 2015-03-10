@@ -16,8 +16,10 @@ explicit-exit-notify 3
 persist-key
 persist-tun
 comp-lzo
+reneg-sec 21600
 remote-cert-tls server
-ns-cert-type server</Value>
+ns-cert-type server
+allow-pull-fqdn</Value>
     </Setting>
   </Settings>
 </SettingsFile>
